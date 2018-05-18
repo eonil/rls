@@ -1,5 +1,5 @@
 [package]
-name = "rls"
+name = "eonil-makeshift-rls"
 version = "0.127.0"
 authors = ["Nick Cameron <ncameron@mozilla.com>", "Jonathan Turner <jturner@mozilla.com>", "The RLS developers"]
 description = "Rust Language Server - provides information about Rust programs to IDEs and other tools"
