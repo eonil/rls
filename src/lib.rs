@@ -71,6 +71,7 @@ const RUSTC_SHIM_ENV_VAR_NAME: &str = "RLS_RUSTC_SHIM";
 
 type Span = span::Span<span::ZeroIndexed>;
 
+/*
 /// The main entry point to the RLS. Parses CLI arguments and then runs the
 /// server.
 pub fn main() {
@@ -103,6 +104,7 @@ pub fn main() {
 
     server::run_server(analysis, vfs);
 }
+*/
 
 fn version() -> &'static str {
     concat!(
