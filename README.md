@@ -1,3 +1,9 @@
+Forked to build as a library instead of executable binary.
+Just renamed `src/main.rs` to `src/lib.rs`.
+If RLS gets updated, this change need to be done again.
+-- Eonil.
+
+
 [![Build Status](https://travis-ci.org/rust-lang-nursery/rls.svg?branch=master)](https://travis-ci.org/rust-lang-nursery/rls) [![Build status](https://ci.appveyor.com/api/projects/status/cxfejvsqnnc1oygs?svg=true)](https://ci.appveyor.com/project/jonathandturner/rls-x6grn)
 
 
