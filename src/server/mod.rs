@@ -17,7 +17,7 @@ use jsonrpc_core::{self as jsonrpc, Id};
 use vfs::Vfs;
 use serde_json;
 
-use version;
+//use version;
 use lsp_data;
 use lsp_data::{LSPNotification, LSPRequest, InitializationOptions};
 use actions::{notifications, requests, ActionContext};
@@ -44,7 +44,7 @@ mod message;
 
 /// Run the Rust Language Server.
 pub fn run_server(analysis: Arc<AnalysisHost>, vfs: Arc<Vfs>) {
-    debug!("Language Server starting up. Version: {}", version());
+    debug!("Language Server starting up. Version: {}", "Eonil Makeshifted");
     let service = LsService::new(
         analysis,
         vfs,

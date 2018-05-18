@@ -7,7 +7,7 @@ license = "Apache-2.0/MIT"
 repository = "https://github.com/rust-lang-nursery/rls"
 categories = ["development-tools"]
 
-build = "build.rs"
+#build = "build.rs"
 
 [dependencies]
 cargo = { git = "https://github.com/rust-lang/cargo", rev = "008c3690846798d678f4a0a45ee46cc9ff6dc90f" }

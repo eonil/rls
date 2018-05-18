@@ -108,6 +108,7 @@ pub fn main() {
 }
 */
 
+/*
 fn version() -> &'static str {
     concat!(
         env!("CARGO_PKG_VERSION"),
@@ -115,6 +116,7 @@ fn version() -> &'static str {
         include_str!(concat!(env!("OUT_DIR"), "/commit-info.txt"))
     )
 }
+*/
 
 fn help() -> &'static str {
     r#"
