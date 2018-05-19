@@ -21,7 +21,7 @@ use span;
 use Span;
 use walkdir::WalkDir;
 
-use actions::post_build::{BuildResults, PostBuildHandler, AnalysisQueue};
+pub use actions::post_build::{BuildResults, PostBuildHandler, AnalysisQueue};
 use actions::progress::{BuildProgressNotifier, BuildDiagnosticsNotifier};
 use build::*;
 use lsp_data;

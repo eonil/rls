@@ -42,7 +42,7 @@ use version;
 use vfs::Vfs;
 
 mod dispatch;
-mod io;
+pub mod io;
 mod message;
 
 const NOT_INITIALIZED_CODE: ErrorCode = ErrorCode::ServerError(-32002);
