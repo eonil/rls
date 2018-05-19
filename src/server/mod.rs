@@ -51,11 +51,21 @@ const NOT_INITIALIZED_CODE: ErrorCode = ErrorCode::ServerError(-32002);
 
 /// Run the Rust Language Server.
 pub fn run_server() {
-    let mut service = LsService::new(
-        Box::new(StdioMsgReader),
-        StdioOutput::new(),
-    );
-    while service.handle_message() == ServerStateChange::Continue {}
+    let output = StdioOutput::new();
+
+    use analysis as xanalysis;
+    use vfs as xvfs;
+    let analysis = Arc::new(xanalysis::AnalysisHost::new(xanalysis::Target::Debug));
+    let vfs = Arc::new(xvfs::Vfs::new());
+    let config = Arc::new(Mutex::new(Config::default()));
+    
+    let mut ctx = ActionContext::new(analysis, vfs, config);
+
+    use std;
+    let workspace_root_path = std::path::Path::new("/Users/Eonil/Workshop/Playground/rust-query-analysis/example1")
+        .to_path_buf();
+    ctx.init(workspace_root_path, &output);
+    println!("done!");
 }
 
 impl BlockingRequestAction for ShutdownRequest {
@@ -106,19 +116,6 @@ impl<O: Output> LsService<O> {
     ) -> LsService<O> {
         let dispatcher = Dispatcher::new(output.clone());
         
-        use analysis as xanalysis;
-        use vfs as xvfs;
-        let analysis = Arc::new(xanalysis::AnalysisHost::new(xanalysis::Target::Debug));
-        let vfs = Arc::new(xvfs::Vfs::new());
-        let config = Arc::new(Mutex::new(Config::default()));
-        
-        let mut ctx = ActionContext::new(analysis, vfs, config);
-
-        use std;
-        let workspace_root_path = std::path::Path::new("/Users/Eonil/Workshop/Playground/rust-query-analysis/example1")
-            .to_path_buf();
-        ctx.init(workspace_root_path, &output);
-        println!("done!");
         panic!();
     }
 
