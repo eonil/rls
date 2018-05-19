@@ -453,14 +453,9 @@ impl server::MessageReader for ChannelMsgReader {
 // Initialize a server, returns the sender end of a channel for posting messages.
 // The initialized server will live on its own thread and look after the receiver.
 fn init() -> Sender<String> {
-    let analysis = Arc::new(AnalysisHost::new(Target::Debug));
-    let vfs = Arc::new(Vfs::new());
     let (sender, receiver) = channel();
 
     let service = LsService::new(
-        analysis,
-        vfs,
-        Arc::new(Mutex::new(Config::default())),
         Box::new(ChannelMsgReader::new(receiver)),
         PrintlnOutput,
     );

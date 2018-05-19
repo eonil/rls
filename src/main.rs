@@ -98,10 +98,7 @@ pub fn main() {
         return;
     }
 
-    let analysis = Arc::new(analysis::AnalysisHost::new(analysis::Target::Debug));
-    let vfs = Arc::new(vfs::Vfs::new());
-
-    server::run_server(analysis, vfs);
+    server::run_server();
 }
 
 fn version() -> &'static str {

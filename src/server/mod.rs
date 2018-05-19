@@ -45,15 +45,18 @@ mod dispatch;
 mod io;
 mod message;
 
+
+
 const NOT_INITIALIZED_CODE: ErrorCode = ErrorCode::ServerError(-32002);
 
 /// Run the Rust Language Server.
-pub fn run_server(analysis: Arc<AnalysisHost>, vfs: Arc<Vfs>) {
-    debug!("Language Server starting up. Version: {}", version());
+pub fn run_server() {
+    //use analysis as xanalysis;
+    //use vfs as xvfs;
+    //let analysis = Arc::new(xanalysis::AnalysisHost::new(xanalysis::Target::Debug));
+    //let vfs = Arc::new(xvfs::Vfs::new());
+    //debug!("Language Server starting up. Version: {}", version());
     let service = LsService::new(
-        analysis,
-        vfs,
-        Arc::new(Mutex::new(Config::default())),
         Box::new(StdioMsgReader),
         StdioOutput::new(),
     );
@@ -104,14 +107,15 @@ pub struct LsService<O: Output> {
 impl<O: Output> LsService<O> {
     /// Construct a new language server service.
     pub fn new(
-        analysis: Arc<AnalysisHost>,
-        vfs: Arc<Vfs>,
-        config: Arc<Mutex<Config>>,
         reader: Box<MessageReader + Send + Sync>,
         output: O,
     ) -> LsService<O> {
+        use analysis as xanalysis;
+        use vfs as xvfs;
+        let analysis = Arc::new(xanalysis::AnalysisHost::new(xanalysis::Target::Debug));
+        let vfs = Arc::new(xvfs::Vfs::new());
         let dispatcher = Dispatcher::new(output.clone());
-
+        let config = Arc::new(Mutex::new(Config::default()));
         LsService {
             msg_reader: reader,
             output,
