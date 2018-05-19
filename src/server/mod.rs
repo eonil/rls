@@ -126,7 +126,7 @@ impl BlockingRequestAction for InitializeRequest {
         result.send(id, &out);
 
         let capabilities = lsp_data::ClientCapabilities::new(&params);
-        ctx.init(get_root_path(&params), &init_options, capabilities, &out).unwrap();
+        ctx.init(get_root_path(&params), capabilities, &out).unwrap();
 
         Ok(NoResponse)
     }

@@ -82,7 +82,6 @@ impl ActionContext {
     pub fn init<O: Output>(
         &mut self,
         current_project: PathBuf,
-        init_options: &InitializationOptions,
         client_capabilities: lsp_data::ClientCapabilities,
         out: &O,
     ) -> Result<(), ()> {
@@ -95,7 +94,7 @@ impl ActionContext {
                     client_capabilities,
                     current_project,
                 );
-                ctx.init(init_options, out);
+                ctx.init(out);
                 ctx
             }
             ActionContext::Init(_) => return Err(()),
@@ -199,7 +198,7 @@ impl InitActionContext {
         FmtConfig::from(&self.current_project)
     }
 
-    fn init<O: Output>(&self, init_options: &InitializationOptions, out: &O) {
+    fn init<O: Output>(&self, out: &O) {
         let current_project = self.current_project.clone();
         let config = self.config.clone();
         // Spawn another thread since we're shelling out to Cargo and this can
@@ -213,10 +212,7 @@ impl InitActionContext {
                 );
             }
         });
-
-        if !init_options.omit_init_build {
-            self.build_current_project(BuildPriority::Cargo, out);
-        }
+        self.build_current_project(BuildPriority::Cargo, out);
     }
 
     fn build<O: Output>(&self, project_path: &Path, priority: BuildPriority, out: &O) {

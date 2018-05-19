@@ -1,0 +1,6 @@
+[package]
+name = "eonil_test_data"
+version = "0.1.0"
+authors = ["eonil <pub.dev@eonil.com>"]
+
+[dependencies]
