@@ -30,7 +30,7 @@ pub trait MessageReader {
 }
 
 /// A message reader that gets messages from `stdin`.
-pub(super) struct StdioMsgReader;
+pub struct StdioMsgReader;
 
 impl MessageReader for StdioMsgReader {
     fn read_message(&self) -> Option<String> {
@@ -171,7 +171,7 @@ pub trait Output: Sync + Send + Clone + 'static {
 
 /// An output that sends notifications and responses on `stdout`.
 #[derive(Clone)]
-pub(super) struct StdioOutput {
+pub struct StdioOutput {
     next_id: Arc<AtomicU32>,
 }
 

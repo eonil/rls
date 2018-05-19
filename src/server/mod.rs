@@ -29,7 +29,7 @@ use serde_json;
 use server::dispatch::Dispatcher;
 pub use server::dispatch::{RequestAction, DEFAULT_REQUEST_TIMEOUT};
 pub use server::io::{MessageReader, Output};
-use server::io::{StdioMsgReader, StdioOutput};
+pub use server::io::{StdioMsgReader, StdioOutput};
 use server::message::RawMessage;
 pub use server::message::{
     Ack, BlockingNotificationAction, BlockingRequestAction, NoResponse, Notification, Request,
