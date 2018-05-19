@@ -75,7 +75,8 @@ impl ActionContext {
         vfs: Arc<Vfs>,
         config: Arc<Mutex<Config>>,
     ) -> ActionContext {
-        ActionContext::Uninit(UninitActionContext::new(analysis, vfs, config))
+        panic!();
+        //ActionContext::Uninit(UninitActionContext::new(analysis, vfs, config))
     }
 
     /// Initialize this context, returns `Err(())` if it has already been initialized.
@@ -138,27 +139,13 @@ pub struct InitActionContext {
 /// Persistent context shared across all requests and actions before the RLS has
 /// been initialized.
 pub struct UninitActionContext {
-    analysis: Arc<AnalysisHost>,
-    vfs: Arc<Vfs>,
-    config: Arc<Mutex<Config>>,
-}
-
-impl UninitActionContext {
-    fn new(
-        analysis: Arc<AnalysisHost>,
-        vfs: Arc<Vfs>,
-        config: Arc<Mutex<Config>>,
-    ) -> UninitActionContext {
-        UninitActionContext {
-            analysis,
-            vfs,
-            config,
-        }
-    }
+    pub analysis: Arc<AnalysisHost>,
+    pub vfs: Arc<Vfs>,
+    pub config: Arc<Mutex<Config>>,
 }
 
 impl InitActionContext {
-    fn new(
+    pub fn new(
         analysis: Arc<AnalysisHost>,
         vfs: Arc<Vfs>,
         config: Arc<Mutex<Config>>,
@@ -185,7 +172,7 @@ impl InitActionContext {
         FmtConfig::from(&self.current_project)
     }
 
-    fn init<O: Output>(&self, out: &O) {
+    pub fn init<O: Output>(&self, out: &O) {
         let current_project = self.current_project.clone();
         let config = self.config.clone();
         // Spawn another thread since we're shelling out to Cargo and this can

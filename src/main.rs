@@ -71,22 +71,24 @@ pub fn main() {
     use server::io::StdioOutput;
     let output = StdioOutput::new();
 
-    use analysis as xanalysis;
-    use vfs as xvfs;
-    let analysis = Arc::new(xanalysis::AnalysisHost::new(xanalysis::Target::Debug));
-    let vfs = Arc::new(xvfs::Vfs::new());
+    let a = Arc::new(analysis::AnalysisHost::new(analysis::Target::Debug));
+    let v = Arc::new(vfs::Vfs::new());
     
     use std::sync::Mutex;
     use config::Config;
     let config = Arc::new(Mutex::new(Config::default()));
     
     use actions::ActionContext;
-    let mut ctx = ActionContext::new(analysis, vfs, config);
-
+    //let mut ctx = ActionContext::Uninit(actions::UninitActionContext {
+    //    analysis: a, 
+    //    vfs: v, 
+    //    config: config });
     use std;
     let workspace_root_path = std::path::Path::new("/Users/Eonil/Workshop/Playground/rust-query-analysis/example1")
         .to_path_buf();
-    ctx.init(workspace_root_path, &output);
+    //ctx.init(workspace_root_path, &output);
+    let mut ctx = actions::InitActionContext::new(a, v, config, workspace_root_path);
+    ctx.init(&output);
     println!("done!");
 }
 
