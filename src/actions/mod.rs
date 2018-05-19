@@ -91,7 +91,6 @@ impl ActionContext {
                     uninit.analysis.clone(),
                     uninit.vfs.clone(),
                     uninit.config.clone(),
-                    client_capabilities,
                     current_project,
                 );
                 ctx.init(out);
@@ -120,9 +119,7 @@ pub struct InitActionContext {
     vfs: Arc<Vfs>,
     // Queues analysis jobs so that we don't over-use the CPU.
     analysis_queue: Arc<AnalysisQueue>,
-
     current_project: PathBuf,
-
     previous_build_results: Arc<Mutex<BuildResults>>,
     build_queue: BuildQueue,
     // Keep a record of builds/post-build tasks currently in flight so that
@@ -135,14 +132,8 @@ pub struct InitActionContext {
     // if a change arrives. We can thus tell if the RLS has been quiescent while
     // waiting to mutate the client state.
     pub quiescent: Arc<AtomicBool>,
-
     prev_changes: Arc<Mutex<HashMap<PathBuf, u64>>>,
-
     config: Arc<Mutex<Config>>,
-    client_capabilities: Arc<lsp_data::ClientCapabilities>,
-    /// Whether the server is performing cleanup (after having received
-    /// 'shutdown' request), just before final 'exit' request.
-    pub shut_down: Arc<AtomicBool>,
 }
 
 /// Persistent context shared across all requests and actions before the RLS has
@@ -172,7 +163,6 @@ impl InitActionContext {
         analysis: Arc<AnalysisHost>,
         vfs: Arc<Vfs>,
         config: Arc<Mutex<Config>>,
-        client_capabilities: lsp_data::ClientCapabilities,
         current_project: PathBuf,
     ) -> InitActionContext {
         let build_queue = BuildQueue::new(vfs.clone(), config.clone());
@@ -189,8 +179,6 @@ impl InitActionContext {
             shown_cargo_error: Arc::new(AtomicBool::new(false)),
             quiescent: Arc::new(AtomicBool::new(false)),
             prev_changes: Arc::new(Mutex::new(HashMap::new())),
-            client_capabilities: Arc::new(client_capabilities),
-            shut_down: Arc::new(AtomicBool::new(false)),
         }
     }
 
@@ -225,7 +213,7 @@ impl InitActionContext {
                 previous_build_results: self.previous_build_results.clone(),
                 project_path: project_path.to_owned(),
                 show_warnings: config.show_warnings,
-                related_information_support: self.client_capabilities.related_information_support,
+                related_information_support: true,
                 shown_cargo_error: self.shown_cargo_error.clone(),
                 active_build_count: self.active_build_count.clone(),
                 use_black_list: config.use_crate_blacklist,

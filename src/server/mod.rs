@@ -70,26 +70,13 @@ impl BlockingRequestAction for ShutdownRequest {
         ctx: &mut ActionContext,
         _out: O,
     ) -> Result<Self::Response, ResponseError> {
-        if let Ok(ctx) = ctx.inited() {
-            // Currently we don't perform an explicit cleanup, other than storing state
-            ctx.shut_down.store(true, Ordering::SeqCst);
-            Ok(Ack)
-        }
-        else {
-            Err(ResponseError::Message(
-                NOT_INITIALIZED_CODE,
-                "not yet received `initialize` request".to_owned(),
-            ))
-        }
+        panic!();
     }
 }
 
 /// Handles notification `exit`, can handle before an `initialize` request
 fn handle_exit_notification(ctx: &mut ActionContext) -> ! {
-    let received_shut_down = ctx.inited()
-        .map(|ctx| ctx.shut_down.load(Ordering::SeqCst))
-        .unwrap_or(false);
-    ::std::process::exit(if received_shut_down { 0 } else { 1 })
+    panic!();
 }
 
 impl BlockingRequestAction for InitializeRequest {
@@ -101,33 +88,8 @@ impl BlockingRequestAction for InitializeRequest {
         ctx: &mut ActionContext,
         out: O,
     ) -> Result<NoResponse, ResponseError> {
-        let init_options: InitializationOptions = params
-            .initialization_options
-            .as_ref()
-            .and_then(|options| serde_json::from_value(options.to_owned()).ok())
-            .unwrap_or_default();
-
-        trace!("init: {:?}", init_options);
-
-        if ctx.inited().is_ok() {
-            return Err(ResponseError::Message(
-                // No code in the spec, just use some number
-                ErrorCode::ServerError(123),
-                "Already received an initialize request".to_owned(),
-            ));
-        }
-
-        let result = InitializeResult {
-            capabilities: server_caps(),
-        };
-
-        // send response early before `ctx.init` to enforce
-        // initialize-response-before-all-other-messages constraint
-        result.send(id, &out);
-
         let capabilities = lsp_data::ClientCapabilities::new(&params);
         ctx.init(get_root_path(&params), capabilities, &out).unwrap();
-
         Ok(NoResponse)
     }
 }
@@ -310,22 +272,6 @@ impl<O: Output> LsService<O> {
         };
 
         trace!("Parsed message `{:?}`", raw_message);
-
-        // If we're in shutdown mode, ignore any messages other than 'exit'.
-        // This is not actually in the spec, I'm not sure we should do this,
-        // but it kinda makes sense.
-        {
-            let shutdown_mode = match self.ctx {
-                ActionContext::Init(ref ctx) => ctx.shut_down.load(Ordering::SeqCst),
-                _ => false,
-            };
-
-            if shutdown_mode && raw_message.method != <ExitNotification as LSPNotification>::METHOD
-            {
-                trace!("In shutdown mode, ignoring {:?}!", raw_message);
-                return ServerStateChange::Continue;
-            }
-        }
 
         if let Err(e) = self.dispatch_message(&raw_message) {
             error!("dispatch error, {:?}", e);

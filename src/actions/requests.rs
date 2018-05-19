@@ -316,9 +316,7 @@ impl RequestAction for Completion {
         let location = pos_to_racer_location(params.position);
         let results = racer::complete_from_file(file_path, location, &session);
 
-        let code_completion_has_snippet_support =
-            ctx.client_capabilities.code_completion_has_snippet_support;
-
+        let code_completion_has_snippet_support = false;
         Ok(
             results
                 .map(|comp| {
