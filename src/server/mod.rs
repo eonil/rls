@@ -51,17 +51,11 @@ const NOT_INITIALIZED_CODE: ErrorCode = ErrorCode::ServerError(-32002);
 
 /// Run the Rust Language Server.
 pub fn run_server() {
-    //use analysis as xanalysis;
-    //use vfs as xvfs;
-    //let analysis = Arc::new(xanalysis::AnalysisHost::new(xanalysis::Target::Debug));
-    //let vfs = Arc::new(xvfs::Vfs::new());
-    //debug!("Language Server starting up. Version: {}", version());
-    let service = LsService::new(
+    let mut service = LsService::new(
         Box::new(StdioMsgReader),
         StdioOutput::new(),
     );
-    LsService::run(service);
-    debug!("Server shutting down");
+    while service.handle_message() == ServerStateChange::Continue {}
 }
 
 impl BlockingRequestAction for ShutdownRequest {
@@ -110,23 +104,22 @@ impl<O: Output> LsService<O> {
         reader: Box<MessageReader + Send + Sync>,
         output: O,
     ) -> LsService<O> {
+        let dispatcher = Dispatcher::new(output.clone());
+        
         use analysis as xanalysis;
         use vfs as xvfs;
         let analysis = Arc::new(xanalysis::AnalysisHost::new(xanalysis::Target::Debug));
         let vfs = Arc::new(xvfs::Vfs::new());
-        let dispatcher = Dispatcher::new(output.clone());
         let config = Arc::new(Mutex::new(Config::default()));
-        LsService {
-            msg_reader: reader,
-            output,
-            ctx: ActionContext::new(analysis, vfs, config),
-            dispatcher,
-        }
-    }
+        
+        let mut ctx = ActionContext::new(analysis, vfs, config);
 
-    /// Run this language service.
-    pub fn run(mut self) {
-        while self.handle_message() == ServerStateChange::Continue {}
+        use std;
+        let workspace_root_path = std::path::Path::new("/Users/Eonil/Workshop/Playground/rust-query-analysis/example1")
+            .to_path_buf();
+        ctx.init(workspace_root_path, &output);
+        println!("done!");
+        panic!();
     }
 
     fn dispatch_message(&mut self, msg: &RawMessage) -> Result<(), jsonrpc::Error> {

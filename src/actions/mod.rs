@@ -200,6 +200,8 @@ impl InitActionContext {
             }
         });
         self.build_current_project(BuildPriority::Cargo, out);
+        self.block_on_build();
+        println!("{:#?}", self.analysis);
     }
 
     fn build<O: Output>(&self, project_path: &Path, priority: BuildPriority, out: &O) {

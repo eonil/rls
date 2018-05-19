@@ -59,7 +59,7 @@ use std::sync::Arc;
 
 pub mod actions;
 pub mod build;
-pub mod cmd;
+//pub mod cmd;
 pub mod config;
 pub mod lsp_data;
 pub mod server;
@@ -88,7 +88,7 @@ pub fn main() {
         match first_arg.as_str() {
             "--version" | "-V" => println!("rls-preview {}", version()),
             "--help" | "-h" => println!("{}", help()),
-            "--cli" => cmd::run(),
+            //"--cli" => cmd::run(),
             unknown => println!(
                 "Unknown argument '{}'. Supported arguments:\n{}",
                 unknown,
