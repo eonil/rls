@@ -81,7 +81,7 @@ impl ActionContext {
     /// Initialize this context, returns `Err(())` if it has already been initialized.
     pub fn init<O: Output>(
         &mut self,
-        current_project: PathBuf,
+        workspace_root_path: PathBuf,
         client_capabilities: lsp_data::ClientCapabilities,
         out: &O,
     ) -> Result<(), ()> {
@@ -91,7 +91,7 @@ impl ActionContext {
                     uninit.analysis.clone(),
                     uninit.vfs.clone(),
                     uninit.config.clone(),
-                    current_project,
+                    workspace_root_path,
                 );
                 ctx.init(out);
                 ctx
