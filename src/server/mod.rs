@@ -88,8 +88,7 @@ impl BlockingRequestAction for InitializeRequest {
         ctx: &mut ActionContext,
         out: O,
     ) -> Result<NoResponse, ResponseError> {
-        let capabilities = lsp_data::ClientCapabilities::new(&params);
-        ctx.init(get_root_path(&params), capabilities, &out).unwrap();
+        ctx.init(get_root_path(&params), &out).unwrap();
         Ok(NoResponse)
     }
 }
@@ -292,42 +291,6 @@ pub enum ServerStateChange {
     /// Stop the server.
     Break,
 }
-
-fn server_caps() -> ServerCapabilities {
-    ServerCapabilities {
-        text_document_sync: Some(TextDocumentSyncCapability::Kind(
-            TextDocumentSyncKind::Incremental,
-        )),
-        hover_provider: Some(true),
-        completion_provider: Some(CompletionOptions {
-            resolve_provider: Some(true),
-            trigger_characters: Some(vec![".".to_string(), ":".to_string()]),
-        }),
-        definition_provider: Some(true),
-        references_provider: Some(true),
-        document_highlight_provider: Some(true),
-        document_symbol_provider: Some(true),
-        workspace_symbol_provider: Some(true),
-        code_action_provider: Some(true),
-        document_formatting_provider: Some(true),
-        execute_command_provider: Some(ExecuteCommandOptions {
-            commands: vec![
-                "rls.applySuggestion".to_owned(),
-                "rls.deglobImports".to_owned(),
-            ],
-        }),
-        rename_provider: Some(true),
-        // These are supported if the `unstable_features` option is set.
-        // We'll update these capabilities dynamically when we get config
-        // info from the client.
-        document_range_formatting_provider: Some(false),
-
-        code_lens_provider: None,
-        document_on_type_formatting_provider: None,
-        signature_help_provider: None,
-    }
-}
-
 fn get_root_path(params: &InitializeParams) -> PathBuf {
     params
         .root_uri

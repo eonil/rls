@@ -82,7 +82,6 @@ impl ActionContext {
     pub fn init<O: Output>(
         &mut self,
         workspace_root_path: PathBuf,
-        client_capabilities: lsp_data::ClientCapabilities,
         out: &O,
     ) -> Result<(), ()> {
         let ctx = match *self {
