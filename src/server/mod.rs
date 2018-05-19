@@ -29,7 +29,8 @@ use serde_json;
 use server::dispatch::Dispatcher;
 pub use server::dispatch::{RequestAction, DEFAULT_REQUEST_TIMEOUT};
 pub use server::io::{MessageReader, Output};
-use server::io::{StdioMsgReader, StdioOutput};
+use server::io::StdioMsgReader;
+pub use server::io::StdioOutput;
 use server::message::RawMessage;
 pub use server::message::{
     Ack, BlockingNotificationAction, BlockingRequestAction, NoResponse, Notification, Request,
@@ -38,11 +39,11 @@ pub use server::message::{
 use std::path::PathBuf;
 use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
-use version;
+//use version;
 use vfs::Vfs;
 
 mod dispatch;
-mod io;
+pub mod io;
 mod message;
 
 

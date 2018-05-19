@@ -171,7 +171,7 @@ pub trait Output: Sync + Send + Clone + 'static {
 
 /// An output that sends notifications and responses on `stdout`.
 #[derive(Clone)]
-pub(super) struct StdioOutput {
+pub struct StdioOutput {
     next_id: Arc<AtomicU32>,
 }
 

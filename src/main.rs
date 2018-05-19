@@ -71,49 +71,26 @@ const RUSTC_SHIM_ENV_VAR_NAME: &str = "RLS_RUSTC_SHIM";
 
 type Span = span::Span<span::ZeroIndexed>;
 
-/// The main entry point to the RLS. Parses CLI arguments and then runs the
-/// server.
 pub fn main() {
-    env_logger::init();
+    use server::io::StdioOutput;
+    let output = StdioOutput::new();
 
-    if env::var(RUSTC_SHIM_ENV_VAR_NAME)
-        .map(|v| v != "0")
-        .unwrap_or(false)
-    {
-        rustc_shim::run();
-        return;
-    }
+    use analysis as xanalysis;
+    use vfs as xvfs;
+    let analysis = Arc::new(xanalysis::AnalysisHost::new(xanalysis::Target::Debug));
+    let vfs = Arc::new(xvfs::Vfs::new());
+    
+    use std::sync::Mutex;
+    use config::Config;
+    let config = Arc::new(Mutex::new(Config::default()));
+    
+    use actions::ActionContext;
+    let mut ctx = ActionContext::new(analysis, vfs, config);
 
-    if let Some(first_arg) = ::std::env::args().nth(1) {
-        match first_arg.as_str() {
-            "--version" | "-V" => println!("rls-preview {}", version()),
-            "--help" | "-h" => println!("{}", help()),
-            //"--cli" => cmd::run(),
-            unknown => println!(
-                "Unknown argument '{}'. Supported arguments:\n{}",
-                unknown,
-                help()
-            ),
-        }
-        return;
-    }
-
-    server::run_server();
+    use std;
+    let workspace_root_path = std::path::Path::new("/Users/Eonil/Workshop/Playground/rust-query-analysis/example1")
+        .to_path_buf();
+    ctx.init(workspace_root_path, &output);
+    println!("done!");
 }
 
-fn version() -> &'static str {
-    concat!(
-        env!("CARGO_PKG_VERSION"),
-        "-",
-        include_str!(concat!(env!("OUT_DIR"), "/commit-info.txt"))
-    )
-}
-
-fn help() -> &'static str {
-    r#"
-    --version or -V to print the version and commit info
-    --help or -h for this message
-    --cli starts the RLS in command line mode
-    No input starts the RLS as a language server
-    "#
-}
