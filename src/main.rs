@@ -59,13 +59,9 @@ use std::sync::Arc;
 
 pub mod actions;
 pub mod build;
-//pub mod cmd;
 pub mod config;
 pub mod lsp_data;
 pub mod server;
-
-#[cfg(test)]
-mod test;
 
 const RUSTC_SHIM_ENV_VAR_NAME: &str = "RLS_RUSTC_SHIM";
 

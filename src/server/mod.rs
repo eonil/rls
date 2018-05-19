@@ -39,7 +39,6 @@ pub use server::message::{
 use std::path::PathBuf;
 use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
-//use version;
 use vfs::Vfs;
 
 mod dispatch;
